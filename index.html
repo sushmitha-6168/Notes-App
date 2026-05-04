@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Notes App</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            text-align: center;
+            background: #f4f6f9;
+        }
+
+        h1 {
+            background: #4e54c8;
+            color: white;
+            padding: 15px;
+        }
+
+        input {
+            padding: 10px;
+            width: 250px;
+        }
+
+        button {
+            padding: 10px;
+            background: #4e54c8;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .note {
+            background: white;
+            margin: 10px auto;
+            padding: 10px;
+            width: 300px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .delete {
+            background: red;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>Notes App 📝</h1>
+
+<input type="text" id="noteInput" placeholder="Enter note">
+<button onclick="addNote()">Add Note</button>
+
+<div id="notesContainer"></div>
+
+<script>
+    let notes = [];
+
+    // Load saved notes
+    window.onload = function() {
+        let saved = localStorage.getItem("notes");
+
+        if (saved) {
+            notes = JSON.parse(saved);
+            displayNotes();
+        }
+    };
+
+    function addNote() {
+        let input = document.getElementById("noteInput");
+        let text = input.value;
+
+        if (text.trim() === "") {
+            alert("Enter note!");
+            return;
+        }
+
+        notes.push(text);
+        localStorage.setItem("notes", JSON.stringify(notes));
+
+        displayNotes();
+        input.value = "";
+    }
+
+    function displayNotes() {
+        let container = document.getElementById("notesContainer");
+        container.innerHTML = "";
+
+        notes.forEach((note, index) => {
+            let div = document.createElement("div");
+            div.className = "note";
+            div.innerText = note;
+
+            let btn = document.createElement("button");
+            btn.innerText = "Delete";
+            btn.className = "delete";
+
+            btn.onclick = function() {
+                notes.splice(index, 1);
+                localStorage.setItem("notes", JSON.stringify(notes));
+                displayNotes();
+            };
+
+            div.appendChild(btn);
+            container.appendChild(div);
+        });
+    }
+</script>
+
+</body>
+</html>
